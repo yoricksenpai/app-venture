@@ -2,6 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {auth, signIn, signOut} from '@/auth'
+import { BadgePlus, LogOut } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 const Navbar = async () => {
   const session = await auth()
 
@@ -12,25 +15,28 @@ const Navbar = async () => {
           <Image src='/logo.png' alt='logo' width={144} height={30} />
         </Link>
         <div className='flex items-center gap-5 text-black'>
-          {session && session?.user ? (
+          {session?.user ? (
             <>
-              <Link href='/startups/create'>
-                <span>Create</span>
+              <Link href='/startup/create'>
+                <span className='max-sm:hidden'>Create</span>
+                <BadgePlus className='size-6 sm:hidden'/>
               </Link>
               <form action={async () => {
                 'use server';
                 await signOut({ redirectTo: '/' });
-              }
-              }>
+              }}>
                 <button type='submit'>
-                  <span>Logout</span>
-              </button>
+                  <span className='max-sm:hidden'>Logout</span>
+                  <LogOut className='size-6 sm:hidden text-red-500'/>
+                </button>
               </form>
-
               
-              <Link href={`/user/${session.user.id}`}>
-                <span>{session?.user?.name}</span>
-                </Link>
+              <Link href={`/user/${session.id}`} className="flex items-center gap-2">
+                <Avatar>
+                  <AvatarImage src={session.user.image || ''} />
+                  <AvatarFallback>{session.user.name?.[0] || 'U'}</AvatarFallback>
+                </Avatar>
+              </Link>
             </>
           ) : (
               <>
