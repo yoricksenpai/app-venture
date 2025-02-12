@@ -1,30 +1,17 @@
 import SearchForm from '@/components/SearchForm';
-import StartupCard from '@/components/StartupCard';
-import {client} from '@/sanity/lib/client';
+import StartupCard, { StartupCardType }  from '@/components/StartupCard';
 import { STARTUPS_QUERY } from '@/sanity/lib/queries';
-import { StartupCardType } from '@/lib/types/StartUpCard';
+import { sanityFetch, SanityLive } from '@/sanity/lib/live';
+
 export default async function Home({searchParams}:{
   searchParams: Promise<{query?: string }>
 }) {
   const query = (await searchParams).query;
 
-  const posts = await client.fetch(STARTUPS_QUERY);
-
+  const params = {search : query || null };
+  const {data: posts} = await sanityFetch({ query: STARTUPS_QUERY, params}) // Fetching data from Sanity
   console.log(posts)
-  // const posts = [
-  //   {
-  //     _createdAt: new Date(),
-  //     views: 55,
-  //     author: {_id : 1, name: 'Johan Priso'},
-  //     _id: 1,
-  //     descritpion: 'This is a description',
-  //     image:
-  //     "https://images.unsplash.com/photo-1634912314704-c646c586b131?q=806w=2940&auto=format&fit=crop&ixlib=rb-4.03&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVuFDB8fHx8fA%3D%3D",
-  //     category:"Robots",
-  //     title:"We Robots",
 
-  //   }
-  // ]
   return (
     <div>
       <section className='pink_container'>
@@ -51,7 +38,10 @@ export default async function Home({searchParams}:{
 </ul>
 
 </section>
+<SanityLive />
+
     </div>
+
   );
 }
 
